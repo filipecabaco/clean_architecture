@@ -1,13 +1,14 @@
 defmodule CleanArchitecture.Adapter.Database.Memory.User do
+  @moduledoc false
   @behaviour CleanArchitecture.Port.Database.User
 
-  alias CleanArchitecture.Domain.Model.User
   alias CleanArchitecture.Adapter.Database.Memory
+  alias CleanArchitecture.Domain.Model.User
 
   @impl true
-  def create_user(name, email, password) do
+  def create_user(params) do
     %User{}
-    |> User.changeset(%{name: name, email: email, password: password})
+    |> User.changeset(params)
     |> Memory.insert(User)
   end
 
@@ -19,5 +20,5 @@ defmodule CleanArchitecture.Adapter.Database.Memory.User do
   end
 
   @impl true
-  def list_users(), do: Memory.all(User)
+  def list_users, do: Memory.all(User)
 end

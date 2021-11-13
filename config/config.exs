@@ -1,5 +1,6 @@
 import Config
 
+config :clean_architecture, :database_child_spec, {CleanArchitecture.Adapter.Database.Postgres, []}
 config :clean_architecture, :user_database, CleanArchitecture.Adapter.Database.Postgres.User
 
 config :clean_architecture,
@@ -11,3 +12,5 @@ config :clean_architecture, CleanArchitecture.Adapter.Database.Postgres,
   username: "postgres",
   password: "postgres",
   hostname: "localhost"
+
+import_config "#{config_env()}.exs"

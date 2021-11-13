@@ -3,11 +3,12 @@ defmodule CleanArchitecture do
 
   use Application
   require Logger
+  alias CleanArchitecture.Adapter.Database.Postgres
+  @database_child_spec Application.compile_env(:clean_architecture, :database_child_spec, Postgres)
 
   def start(_type, _args) do
     children = [
-      {CleanArchitecture.Adapter.Database.Memory, []},
-      {CleanArchitecture.Adapter.Database.Postgres, []},
+      @database_child_spec,
       {Plug.Cowboy, scheme: :http, plug: CleanArchitecture.Adapter.Entrypoint.Web, port: 4000}
     ]
 

@@ -1,4 +1,5 @@
 defmodule CleanArchitecture.Domain.Model.User do
+  @moduledoc false
   use Ecto.Schema
   import Ecto.Changeset
   @derive {Jason.Encoder, only: [:email, :name, :inserted_at, :updated_at]}
@@ -25,5 +26,14 @@ defmodule CleanArchitecture.Domain.Model.User do
     |> validate_required([:name, :email, :password])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email, message: "Email already exists")
+    |> hash_password()
   end
+
+  defp hash_password(%Ecto.Changeset{valid?: true} = changeset) do
+    {_, password} = fetch_field(changeset, :password)
+    %{password_hash: password} = Argon2.add_hash(password)
+    put_change(changeset, :password, password)
+  end
+
+  defp hash_password(%Ecto.Changeset{valid?: false} = changeset), do: changeset
 end

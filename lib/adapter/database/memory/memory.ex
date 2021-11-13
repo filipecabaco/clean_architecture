@@ -1,4 +1,5 @@
 defmodule CleanArchitecture.Adapter.Database.Memory do
+  @moduledoc false
   use Agent
 
   def start_link(_) do
@@ -73,7 +74,7 @@ defmodule CleanArchitecture.Adapter.Database.Memory do
 
   @spec all(module()) :: list(any())
   def all(mod) do
-    Agent.get(__MODULE__, fn state -> Map.get(state, mod, {:error, :unknown_domain}) end)
+    Agent.get(__MODULE__, fn state -> Map.get(state, mod, []) end)
   end
 
   defp changeset_valid?(%Ecto.Changeset{valid?: true}), do: :ok
