@@ -3,8 +3,12 @@ defmodule CleanArchitecture do
 
   use Application
   require Logger
-  alias CleanArchitecture.Adapter.Database.Postgres
-  @database_child_spec Application.compile_env(:clean_architecture, :database_child_spec, Postgres)
+
+  @database_child_spec Application.compile_env(
+                         :clean_architecture,
+                         :database_child_spec,
+                         CleanArchitecture.Adapter.Database.Postgres
+                       )
 
   def start(_type, _args) do
     children = [

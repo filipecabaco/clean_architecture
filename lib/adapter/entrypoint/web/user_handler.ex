@@ -18,11 +18,11 @@ defmodule CleanArchitecture.Adapter.Entrypoint.Web.UserHandler do
       {:ok, res} ->
         send_resp(conn, 200, Jason.encode!(res))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        handle_changeset_errors(conn, changeset)
-
       {:error, :resource_not_found} ->
         send_resp(conn, 404, "")
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        handle_changeset_errors(conn, changeset)
 
       _ ->
         send_resp(conn, 500, "")
@@ -39,9 +39,8 @@ defmodule CleanArchitecture.Adapter.Entrypoint.Web.UserHandler do
     end
   end
 
-  defp filter_conflict_messages(errors) do
-    Enum.filter(errors, fn {_, {_, constraints}} -> Keyword.take(constraints, [:constraint]) == :unique end)
-  end
+  defp filter_conflict_messages(errors),
+    do: Enum.filter(errors, fn {_, {_, constraints}} -> Keyword.take(constraints, [:constraint]) == :unique end)
 
   defp errors_to_json(errors), do: errors |> Enum.map(&error_to_string/1) |> Jason.encode_to_iodata!()
   defp error_to_string({field, {message, _}}), do: "#{field}: #{message}"
